@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 import { Point, Product } from "./types";
-import { Sparkles, Brain, Scale, ShieldCheck, Database, FileSpreadsheet, Play, GitBranch, ArrowRight, BookOpen, Calculator, LineChart, Landmark } from "lucide-react";
+import { Sparkles, Brain, Scale, ShieldCheck, Database, FileSpreadsheet, Play, GitBranch, ArrowRight, BookOpen, Calculator, LineChart, Landmark, AlertTriangle, Users, Target } from "lucide-react";
 import FoodMarketSimulatorChart from "./components/FoodMarketSimulatorChart";
 import DataPointsTable from "./components/DataPointsTable";
 import PricePredictionCalculator from "./components/PricePredictionCalculator";
@@ -15,6 +15,9 @@ import GeminiReportSection from "./components/GeminiReportSection";
 import SurgeOverviewDashboard from "./components/SurgeOverviewDashboard";
 import AccumulatedCostIntegrationTab from "./components/AccumulatedCostIntegrationTab";
 
+import EscenarioE_RaicesTab from "./components/EscenarioE";
+import EscenarioF_SistemasTab from "./components/EscenarioF";
+import EscenarioG_EDOTab from "./components/EscenarioG";
 
 // Default suggestions in Bolivian markets (Escenario C)
 const DEFAULT_PRODUCTS: Product[] = [
@@ -84,7 +87,8 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS);
   const [activeIdx, setActiveIdx] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<number>(12.5); // Default is a day without points!
-  const [activeTab, setActiveTab] = useState<"escenarioC" | "escenarioD">("escenarioC");
+  // Modifica el tipo permitido en el useState para incluir las letras 'escenarioE', 'escenarioF' y 'escenarioG'
+const [activeTab, setActiveTab] = useState<"escenarioC" | "escenarioD" | "escenarioE" | "escenarioF" | "escenarioG">("escenarioC");
 
   // Active interpolation curves visibility toggles
   const [showLagrange, setShowLagrange] = useState<boolean>(true);
@@ -212,6 +216,43 @@ export default function App() {
             <Landmark className="w-4 h-4" />
             <span>Escenario D: Costo Acumulado e Integración</span>
           </button>
+          <button
+    onClick={() => setActiveTab("escenarioE")}
+    className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition select-none cursor-pointer whitespace-nowrap ${
+      activeTab === "escenarioE"
+        ? "border-red-500 text-red-400"
+        : "border-transparent text-slate-400 hover:text-slate-200"
+    }`}
+  >
+    <Target className="w-4 h-4" />
+    <span>Escenario E: Umbrales Críticos (Raíces)</span>
+  </button>
+
+  {/* NUEVO: Botón Escenario F */}
+  <button
+    onClick={() => setActiveTab("escenarioF")}
+    className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition select-none cursor-pointer whitespace-nowrap ${
+      activeTab === "escenarioF"
+        ? "border-orange-500 text-orange-400"
+        : "border-transparent text-slate-400 hover:text-slate-200"
+    }`}
+  >
+    <AlertTriangle className="w-4 h-4" />
+    <span>Escenario F: Rumores (Mal Condicionado)</span>
+  </button>
+
+  {/* NUEVO: Botón Escenario G */}
+  <button
+    onClick={() => setActiveTab("escenarioG")}
+    className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition select-none cursor-pointer whitespace-nowrap ${
+      activeTab === "escenarioG"
+        ? "border-cyan-500 text-cyan-400"
+        : "border-transparent text-slate-400 hover:text-slate-200"
+    }`}
+  >
+    <Users className="w-4 h-4" />
+    <span>Escenario G: Dinámica Social (EDO)</span>
+  </button>
         </div>
 
         {/* Section 1: Dashboard for overall surge comparisons */}
@@ -224,150 +265,173 @@ export default function App() {
           />
         </section>
 
-        {activeTab === "escenarioC" ? (
-          <>
-            {/* Section 2: Chart Visualizer & Control Sidebar */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-              
-              {/* SVG Plotting Engine Widget (Large Grid block) */}
-              <div className="lg:col-span-8 flex flex-col h-full">
-                <FoodMarketSimulatorChart
-                  product={activeProduct}
-                  selectedDay={selectedDay}
-                  setSelectedDay={setSelectedDay}
-                  showLagrange={showLagrange}
-                  showNewton={showNewton}
-                  showSpline={showSpline}
-                  clampOscillations={clampOscillations}
-                  setClampOscillations={setClampOscillations}
-                />
-              </div>
-
-              {/* Side Control Centre (Calculator, parameters, points editor) */}
-              <div className="lg:col-span-4 flex flex-col gap-6">
-                
-                {/* Realtime numerical toggles HUD */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                  <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block mb-3">
-                    🎛️ Capas y Funciones de Métodos
-                  </span>
-                  <div className="flex flex-col gap-2">
-                    {/* Cubic Splines Toggle */}
-                    <label className="flex items-center justify-between cursor-pointer p-2 rounded-xl bg-slate-950/50 hover:bg-slate-950 border border-slate-800/40 transition">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                        <span className="text-xs font-bold text-slate-200">Splines Cúbicos</span>
+        {/* RENDERIZADO CONDICIONAL DE LOS ESCENARIOS (Reemplazo del operador ternario) */}
+        <div className="w-full">
+          {(() => {
+            switch (activeTab) {
+              case "escenarioC":
+                return (
+                  <>
+                    {/* Section 2: Chart Visualizer & Control Sidebar */}
+                    <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                      
+                      {/* SVG Plotting Engine Widget (Large Grid block) */}
+                      <div className="lg:col-span-8 flex flex-col h-full">
+                        <FoodMarketSimulatorChart
+                          product={activeProduct}
+                          selectedDay={selectedDay}
+                          setSelectedDay={setSelectedDay}
+                          showLagrange={showLagrange}
+                          showNewton={showNewton}
+                          showSpline={showSpline}
+                          clampOscillations={clampOscillations}
+                          setClampOscillations={setClampOscillations}
+                        />
                       </div>
-                      <input
-                        type="checkbox"
-                        checked={showSpline}
-                        onChange={(e) => setShowSpline(e.target.checked)}
-                        className="w-4 h-4 rounded text-emerald-500 accent-emerald-500 cursor-pointer"
-                      />
-                    </label>
 
-                    {/* Lagrange Toggle */}
-                    <label className="flex items-center justify-between cursor-pointer p-2 rounded-xl bg-slate-950/50 hover:bg-slate-950 border border-slate-800/40 transition">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                        <span className="text-xs font-bold text-slate-200">Polinomio de Lagrange</span>
+                      {/* Side Control Centre (Calculator, parameters, points editor) */}
+                      <div className="lg:col-span-4 flex flex-col gap-6">
+                        
+                        {/* Realtime numerical toggles HUD */}
+                        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                          <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block mb-3">
+                            🎛️ Capas y Funciones de Métodos
+                          </span>
+                          <div className="flex flex-col gap-2">
+                            {/* Cubic Splines Toggle */}
+                            <label className="flex items-center justify-between cursor-pointer p-2 rounded-xl bg-slate-950/50 hover:bg-slate-950 border border-slate-800/40 transition">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                <span className="text-xs font-bold text-slate-200">Splines Cúbicos</span>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={showSpline}
+                                onChange={(e) => setShowSpline(e.target.checked)}
+                                className="w-4 h-4 rounded text-emerald-500 accent-emerald-500 cursor-pointer"
+                              />
+                            </label>
+
+                            {/* Lagrange Toggle */}
+                            <label className="flex items-center justify-between cursor-pointer p-2 rounded-xl bg-slate-950/50 hover:bg-slate-950 border border-slate-800/40 transition">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                <span className="text-xs font-bold text-slate-200">Polinomio de Lagrange</span>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={showLagrange}
+                                onChange={(e) => setShowLagrange(e.target.checked)}
+                                className="w-4 h-4 rounded text-blue-500 accent-blue-500 cursor-pointer"
+                              />
+                            </label>
+
+                            {/* Newton Toggle */}
+                            <label className="flex items-center justify-between cursor-pointer p-2 rounded-xl bg-slate-950/50 hover:bg-slate-950 border border-slate-800/40 transition">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+                                <span className="text-xs font-bold text-slate-200">Diferencias de Newton</span>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={showNewton}
+                                onChange={(e) => setShowNewton(e.target.checked)}
+                                className="w-4 h-4 rounded text-pink-500 accent-pink-500 cursor-pointer"
+                              />
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Price Prediction Calculator */}
+                        <div className="flex-grow">
+                          <PricePredictionCalculator
+                            points={activeProduct.points}
+                            selectedDay={selectedDay}
+                            setSelectedDay={setSelectedDay}
+                            unit={activeProduct.unit}
+                          />
+                        </div>
                       </div>
-                      <input
-                        type="checkbox"
-                        checked={showLagrange}
-                        onChange={(e) => setShowLagrange(e.target.checked)}
-                        className="w-4 h-4 rounded text-blue-500 accent-blue-500 cursor-pointer"
-                      />
-                    </label>
+                    </section>
 
-                    {/* Newton Toggle */}
-                    <label className="flex items-center justify-between cursor-pointer p-2 rounded-xl bg-slate-950/50 hover:bg-slate-950 border border-slate-800/40 transition">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
-                        <span className="text-xs font-bold text-slate-200">Diferencias de Newton</span>
+                    {/* Section 3: Points Editor (Inline) & Step-by-Step Mathematical Procedures */}
+                    <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-6">
+                      <DataPointsTable
+                        product={activeProduct}
+                        onPointsChange={handlePointsChange}
+                        onReset={handleResetProduct}
+                      />
+                      <NumericalMethodsProcedures points={activeProduct.points} selectedDay={selectedDay} />
+                    </section>
+
+                    {/* Section 4: Secure server-side Gemini Analytical socioeconomic summary report */}
+                    <section className="mb-8 mt-6">
+                      <GeminiReportSection product={activeProduct} selectedDay={selectedDay} />
+                    </section>
+                  </>
+                );
+
+              case "escenarioD":
+                return (
+                  <>
+                    {/* Escenario D Active Layout */}
+                    <section className="space-y-6 animate-fade-in">
+                      <AccumulatedCostIntegrationTab
+                        product={activeProduct}
+                        products={products}
+                      />
+                    </section>
+
+                    {/* Let user edit data points in real-time and see immediate impact on integration */}
+                    <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-6">
+                      <DataPointsTable
+                        product={activeProduct}
+                        onPointsChange={handlePointsChange}
+                        onReset={handleResetProduct}
+                      />
+                      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+                        <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+                          📖 Guía y Teoría Económica del Escenario D
+                        </h3>
+                        <p className="text-xs text-slate-400 leading-relaxed text-justify">
+                          El desabastecimiento de alimentos no solo eleva los precios momentáneamente, sino que drena los ahorros familiares de forma continua. La integral definida $$\int_{1}^{30} P(x) \, dx$$ mide precisamente ese efecto acumulativo a lo largo de un ciclo mensual de 29 días de adquisición diaria activa.
+                        </p>
+                        <div className="p-3 bg-slate-950 rounded-xl space-y-2.5 text-xs font-mono">
+                          <span className="font-bold text-emerald-400 block uppercase tracking-wide">💡 Análisis del Impacto Adquisitivo:</span>
+                          <ul className="space-y-2 text-[11px] text-slate-300">
+                            <li className="flex gap-1.5 items-start">
+                              <span className="text-emerald-500 font-bold">1.</span>
+                              <span><strong>Gasto Real:</strong> Refleja el monto acumulado del consumo dinámico. En el mundo real, los trapecios o curvas parabólicas describen mejor esta transición continua.</span>
+                            </li>
+                            <li className="flex gap-1.5 items-start">
+                              <span className="text-emerald-500 font-bold">2.</span>
+                              <span><strong>Escenario Teórico:</strong> Representa un hipotético mercado con precios estables fijos en el Día 1.</span>
+                            </li>
+                            <li className="flex gap-1.5 items-start">
+                              <span className="text-emerald-500 font-bold">3.</span>
+                              <span><strong>Pérdida de Poder Adquisitivo:</strong> Es la brecha monetaria obligada que drena el presupuesto de subsistencia de las familias bolivianas.</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <input
-                        type="checkbox"
-                        checked={showNewton}
-                        onChange={(e) => setShowNewton(e.target.checked)}
-                        className="w-4 h-4 rounded text-pink-500 accent-pink-500 cursor-pointer"
-                      />
-                    </label>
-                  </div>
-                </div>
+                    </section>
+                  </>
+                );
 
-                {/* Price Prediction Calculator */}
-                <div className="flex-grow">
-                  <PricePredictionCalculator
-                    points={activeProduct.points}
-                    selectedDay={selectedDay}
-                    setSelectedDay={setSelectedDay}
-                    unit={activeProduct.unit}
-                  />
-                </div>
-              </div>
-            </section>
+              case "escenarioE":
+                return <EscenarioE_RaicesTab />;
 
-            {/* Section 3: Points Editor (Inline) & Step-by-Step Mathematical Procedures */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              <DataPointsTable
-                product={activeProduct}
-                onPointsChange={handlePointsChange}
-                onReset={handleResetProduct}
-              />
-              <NumericalMethodsProcedures points={activeProduct.points} selectedDay={selectedDay} />
-            </section>
+              case "escenarioF":
+                return <EscenarioF_SistemasTab />;
 
-            {/* Section 4: Secure server-side Gemini Analytical socioeconomic summary report */}
-            <section className="mb-8">
-              <GeminiReportSection product={activeProduct} selectedDay={selectedDay} />
-            </section>
-          </>
-        ) : (
-          <>
-            {/* Escenario D Active Layout */}
-            <section className="space-y-6 animate-fade-in">
-              <AccumulatedCostIntegrationTab
-                product={activeProduct}
-                products={products}
-              />
-            </section>
+              case "escenarioG":
+                return <EscenarioG_EDOTab />;
 
-            {/* Let user edit data points in real-time and see immediate impact on integration */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              <DataPointsTable
-                product={activeProduct}
-                onPointsChange={handlePointsChange}
-                onReset={handleResetProduct}
-              />
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-                <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-                  📖 Guía y Teoría Económica del Escenario D
-                </h3>
-                <p className="text-xs text-slate-400 leading-relaxed text-justify">
-                  El desabastecimiento de alimentos no solo eleva los precios momentáneamente, sino que drena los ahorros familiares de forma continua. La integral definida $\int_{1}^{30} P(x) \, dx$ mide precisamente ese efecto acumulativo a lo largo de un ciclo mensual de 29 días de adquisición diaria activa.
-                </p>
-                <div className="p-3 bg-slate-950 rounded-xl space-y-2.5 text-xs font-mono">
-                  <span className="font-bold text-emerald-400 block uppercase tracking-wide">💡 Análisis del Impacto Adquisitivo:</span>
-                  <ul className="space-y-2 text-[11px] text-slate-300">
-                    <li className="flex gap-1.5 items-start">
-                      <span className="text-emerald-500 font-bold">1.</span>
-                      <span><strong>Gasto Real:</strong> Refleja el monto acumulado del consumo dinámico. En el mundo real, los trapecios o curvas parabólicas describen mejor esta transición continua.</span>
-                    </li>
-                    <li className="flex gap-1.5 items-start">
-                      <span className="text-emerald-500 font-bold">2.</span>
-                      <span><strong>Escenario Teórico:</strong> Representa un hipotético mercado con precios estables fijos en el Día 1.</span>
-                    </li>
-                    <li className="flex gap-1.5 items-start">
-                      <span className="text-emerald-500 font-bold">3.</span>
-                      <span><strong>Pérdida de Poder Adquisitivo:</strong> Es la brecha monetaria obligada que drena el presupuesto de subsistencia de las familias bolivianas.</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-          </>
-        )}
+              default:
+                return null;
+            }
+          })()}
+        </div>
 
       </main>
 

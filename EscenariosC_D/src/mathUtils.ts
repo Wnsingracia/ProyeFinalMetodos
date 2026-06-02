@@ -318,3 +318,219 @@ export function integrateSimpson38(y: number[], h: number): number {
   return ((3 * h) / 8) * sum;
 }
 
+export interface IteracionRaiz {
+  iter: number;
+  xn: number;
+  fxn: number;
+  err: number;
+}
+
+// 1. Método de Bisección Compuesto
+export function resolverBiseccion(f: (x: number) => number, x0: number, x1: number, tol: number = 1e-5, maxIter: number = 20): IteracionRaiz[] {
+  let iteraciones: IteracionRaiz[] = [];
+  let a = x0, b = x1;
+  
+  if (f(a) * f(b) >= 0) return [];
+
+  for (let i = 1; i <= maxIter; i++) {
+    let c = (a + b) / 2;
+    let fc = f(c);
+    let error = Math.abs((b - a) / 2);
+    
+    iteraciones.push({ iter: i, xn: c, fxn: fc, err: error });
+    
+    if (error < tol || Math.abs(fc) < 1e-7) break;
+    if (f(a) * fc < 0) b = c; else a = c;
+  }
+  return iteraciones;
+}
+
+// 2. Método de Newton-Raphson (Requiere función y su derivada analítica)
+export function resolverNewtonRaphson(f: (x: number) => number, df: (x: number) => number, x0: number, tol: number = 1e-5, maxIter: number = 20): IteracionRaiz[] {
+  let iteraciones: IteracionRaiz[] = [];
+  let x = x0;
+
+  for (let i = 1; i <= maxIter; i++) {
+    let fx = f(x);
+    let dfx = df(x);
+    if (Math.abs(dfx) < 1e-12) break; // Evitar división por cero
+    
+    let xNext = x - fx / dfx;
+    let error = Math.abs(xNext - x);
+    
+    iteraciones.push({ iter: i, xn: xNext, fxn: f(xNext), err: error });
+    
+    if (error < tol || Math.abs(f(xNext)) < 1e-7) break;
+    x = xNext;
+  }
+  return iteraciones;
+}
+
+// 3. Método de la Secante (Usa dos aproximaciones iniciales sin derivada)
+export function resolverSecante(f: (x: number) => number, x0: number, x1: number, tol: number = 1e-5, maxIter: number = 20): IteracionRaiz[] {
+  let iteraciones: IteracionRaiz[] = [];
+  let xA = x0;
+  let xB = x1;
+
+  for (let i = 1; i <= maxIter; i++) {
+    let fxA = f(xA);
+    let fxB = f(xB);
+    if (Math.abs(fxB - fxA) < 1e-12) break;
+
+    let xNext = xB - (fxB * (xB - xA)) / (fxB - fxA);
+    let error = Math.abs(xNext - xB);
+
+    iteraciones.push({ iter: i, xn: xNext, fxn: f(xNext), err: error });
+
+    if (error < tol || Math.abs(f(xNext)) < 1e-7) break;
+    xA = xB;
+    xB = xNext;
+  }
+  return iteraciones;
+}
+
+export interface AnalisisSensibilidadF {
+  x_base: number[];
+  x_pert: number[];
+  var_b: number;
+  var_x: number[];
+  kappa: number;
+  esMalCondicionado: boolean;
+}
+
+export function resolverEscenarioF(porcentajePerturbacion: number): AnalisisSensibilidadF {
+  // Matriz de coeficientes logísticos A
+  const A = [[1, 1], [1, 1.005]];
+  
+  // Inversa exacta calculada analíticamente para alta precisión
+  // Det(A) = 1.005 - 1 = 0.005
+  const invA = [
+    [201, -200],
+    [-200, 200]
+  ];
+
+  // Vector B: Demanda base original en mercados (Zona Norte y Zona Sur)
+  const b_base = [20, 20.05];
+
+  // 1. Solución del Sistema Base: X = A^-1 * B
+  const x1_base = invA[0][0] * b_base[0] + invA[0][1] * b_base[1];
+  const x2_base = invA[1][0] * b_base[0] + invA[1][1] * b_base[1];
+
+  // 2. Aplicar perturbación por pánico de compra en el mercado de la Zona Sur (b2)
+  const factor = 1 + (porcentajePerturbacion / 100);
+  const b_pert = [b_base[0], b_base[1] * factor];
+
+  // 3. Solución del Sistema Perturbado: X_pert = A^-1 * B_pert
+  const x1_pert = invA[0][0] * b_pert[0] + invA[0][1] * b_pert[1];
+  const x2_pert = invA[1][0] * b_pert[0] + invA[1][1] * b_pert[1];
+
+  // 4. Cálculo estricto del Número de Condición usando la Norma Infinito
+  // ||A||_inf = max(1+1, 1+1.005) = 2.005
+  // ||A^-1||_inf = max(201+200, 200+200) = 401
+  const normaA = 2.005;
+  const normaInvA = 401;
+  const kappa = normaA * normaInvA; // 804.005
+
+  // Variaciones porcentuales de las respuestas
+  const var_x1 = ((x1_pert - x1_base) / x1_base) * 100;
+  const var_x2 = ((x2_pert - x2_base) / x2_base) * 100;
+
+  return {
+    x_base: [x1_base, x2_base],
+    x_pert: [x1_pert, x2_pert],
+    var_b: porcentajePerturbacion,
+    var_x: [var_x1, var_x2],
+    kappa: parseFloat(kappa.toFixed(3)),
+    esMalCondicionado: kappa > 100
+  };
+}
+export interface RegistroTrayectoriaG {
+  tiempo: number[];
+  neutrales: number[];
+  manifestantes: number[];
+  mediadores: number[];
+}
+
+// Estructura de parámetros físicos para el Escenario G
+export interface ParametrosG {
+  alpha: number;  // Tasa de influencia o contagio (a)
+  beta: number;   // Retorno a la neutralidad (b)
+  gamma: number;  // Efectividad del diálogo (c)
+  k: number;      // Reacción institucional o mediadora (k)
+  r: number;      // Desgaste de los mediadores (r)
+}
+
+export function resolverEDOSocial(
+  params: ParametrosG,
+  condicionesIniciales: { N0: number; M0: number; D0: number },
+  dias: number,
+  metodo: "heun" | "rk4"
+): RegistroTrayectoriaG {
+  const { alpha, beta, gamma, k, r } = params;
+  let N = condicionesIniciales.N0;
+  let M = condicionesIniciales.M0;
+  let D = condicionesIniciales.D0;
+
+  let t = 0;
+  const h = 0.1; // Tamaño del paso de integración temporal
+  const pasos = dias / h;
+
+  const resultado: RegistroTrayectoriaG = {
+    tiempo: [0],
+    neutrales: [N],
+    manifestantes: [M],
+    mediadores: [D],
+  };
+
+  // Definición estricta del sistema de ecuaciones del modelo [cite: 143]
+  const dN = (n: number, m: number, d: number) => -alpha * n * m + beta * d;
+  const dM = (n: number, m: number, d: number) => alpha * n * m - gamma * m * d;
+  const dD = (n: number, m: number, d: number) => k * m - r * d;
+
+  for (let i = 0; i < pasos; i++) {
+    if (metodo === "heun") {
+      // Predictor (Euler estándar)
+      const pN = N + h * dN(N, M, D);
+      const pM = M + h * dM(N, M, D);
+      const pD = D + h * dD(N, M, D);
+
+      // Corrector (Promedio de pendientes)
+      N += (h / 2) * (dN(N, M, D) + dN(pN, pM, pD));
+      M += (h / 2) * (dM(N, M, D) + dM(pN, pM, pD));
+      D += (h / 2) * (dD(N, M, D) + dD(pN, pM, pD));
+    } else {
+      // Método clásico de Runge-Kutta de 4to Orden (RK4) 
+      const k1N = dN(N, M, D);
+      const k1M = dM(N, M, D);
+      const k1D = dD(N, M, D);
+
+      const k2N = dN(N + 0.5 * h * k1N, M + 0.5 * h * k1M, D + 0.5 * h * k1D);
+      const k2M = dM(N + 0.5 * h * k1N, M + 0.5 * h * k1M, D + 0.5 * h * k1D);
+      const k2D = dD(N + 0.5 * h * k1N, M + 0.5 * h * k1M, D + 0.5 * h * k1D);
+
+      const k3N = dN(N + 0.5 * h * k2N, M + 0.5 * h * k2M, D + 0.5 * h * k2D);
+      const k3M = dM(N + 0.5 * h * k2N, M + 0.5 * h * k2M, D + 0.5 * h * k2D);
+      const k3D = dD(N + 0.5 * h * k2N, M + 0.5 * h * k2M, D + 0.5 * h * k2D);
+
+      const k4N = dN(N + h * k3N, M + h * k3M, D + h * k3D);
+      const k4M = dM(N + h * k3N, M + h * k3M, D + h * k3D);
+      const k4D = dD(N + h * k3N, M + h * k3M, D + h * k3D);
+
+      N += (h / 6) * (k1N + 2 * k2N + 2 * k3N + k4N);
+      M += (h / 6) * (k1M + 2 * k2M + 2 * k3M + k4M);
+      D += (h / 6) * (k1D + 2 * k2D + 2 * k3D + k4D);
+    }
+    t += h;
+
+    // Almacenar muestras únicamente en puntos discretos (cada día entero)
+    if (Math.abs(t - Math.round(t)) < 0.01) {
+      resultado.tiempo.push(Math.round(t));
+      resultado.neutrales.push(Math.max(0, N));
+      resultado.manifestantes.push(Math.max(0, M));
+      resultado.mediadores.push(Math.max(0, D));
+    }
+  }
+
+  return resultado;
+}
+
