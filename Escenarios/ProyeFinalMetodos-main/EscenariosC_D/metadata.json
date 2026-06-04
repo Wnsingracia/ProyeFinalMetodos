@@ -1,6 +1,0 @@
-{
-  "name": "Simulador de Precios y Métodos Numéricos",
-  "description": "Herramienta interactiva para simular y analizar curvas continuas de precios de alimentos en el Escenario C utilizando Lagrange, Newton y Splines Cúbicos.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
