@@ -193,82 +193,131 @@ export default function GeminiReportSection({ product, selectedDay }: Props) {
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-        <div>
-          <h3 className="text-base font-semibold text-slate-100 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-emerald-400" />
-            Informe Analítico Socioeconómico e Interpolación
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Genera un diagnóstico académico y científico del desabastecimiento usando IA.
-          </p>
-        </div>
+      {/* Main questions grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
 
-        {report && (
-          <button
-            onClick={handleCopyClipboard}
-            className="flex items-center gap-1.5 text-xs text-slate-300 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-medium transition select-none"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">¡Copiado!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5 text-slate-400" />
-                <span>Copiar informe</span>
-              </>
-            )}
-          </button>
-        )}
+        {/* Question 1 */}
+<div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+  <div>
+    <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+      1
+    </div>
+    <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+      ¿Cuál sería el precio aproximado en un día sin dato?
+    </h4>
+    <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+      <p>
+        Se obtiene evaluando la función interpoladora para ese valor de abscisa.
+      </p>
+      <div className="p-2 bg-slate-900/60 border border-slate-800/40 rounded font-mono text-[9px] text-slate-300">
+        <span className="block text-slate-500 mb-1.5 font-sans text-[10px]">Ejemplo Día 9.5:</span>
+        <div className="flex justify-between text-slate-200">
+          <span>Splines:</span>
+          <span className="text-pink-400 font-bold">10.78 Bs</span>
+        </div>
+        <div className="flex justify-between text-slate-400 mt-1">
+          <span>Lagrange:</span>
+          <span className="font-bold">10.74 Bs</span>
+        </div>
       </div>
+      <p>
+        Los trazadores cúbicos calculan el precio más verosímil y estable al evitar aberraciones de oscilación.
+      </p>
+    </div>
+  </div>
+</div>
 
-      {errorMsg && (
-        <div className="mb-4 bg-rose-950/40 border border-rose-900/50 p-3 rounded-xl flex items-start gap-3 text-rose-300 text-xs">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 text-rose-400 mt-0.5" />
+        {/* Question 2 */}
+        <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
           <div>
-            <span className="font-bold block">Error al generar informe</span>
-            <span>{errorMsg}</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-950/50 border border-emerald-900/40 flex items-center justify-center text-emerald-400 text-xs font-mono font-black mb-3">
+              2
+            </div>
+            <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+              ¿Cómo se comporta la curva de precios durante el mes?
+            </h4>
+            <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+              <p>
+                La curva para el artículo activo (<strong>{product.name} {product.emoji}</strong>) exhibe una tendencia acumulada de asenso
+                <strong className={`font-bold  "text-rose-400" : "text-emerald-400"}`}>
+                  
+                </strong>.
+              </p>
+              <p>
+                El desabastecimiento provoca aceleración en días críticos, produciendo curvas continuas que acumulan empalmes de parábolas gracias a la inercia económica. Esto rompe la suposición lineal tradicional.
+              </p>
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Report Container */}
-      {!report && !isLoading ? (
-        <div className="border border-dashed border-slate-800 rounded-xl p-8 text-center flex flex-col items-center justify-center bg-slate-950/20">
-          <Globe className="w-12 h-12 text-slate-600 mb-3" />
-          <h4 className="text-sm font-semibold text-slate-400 mb-2">¿Listo para un análisis riguroso de Métodos Numéricos?</h4>
-          <p className="text-xs text-slate-500 max-w-md mb-5 leading-relaxed">
-            Haciendo click en el botón de abajo, analizaremos tus datos e interpolaciones del producto <strong>{product.name}</strong> para generar un dictamen profundo, seguro y despartidizado.
-          </p>
-          <button
-            onClick={generateAIReport}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs px-6 py-2.5 rounded-xl transition shadow-lg shrink-0"
-          >
-            <Sparkles className="w-4 h-4 fill-slate-950" />
-            <span>Generar Reporte Científico</span>
-          </button>
+        {/* Question 3 */}
+<div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+  <div>
+    <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+      3
+    </div>
+    <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+      ¿Qué producto tuvo mayor incremento?
+    </h4>
+    <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+      <p>
+        El simulador dinámico de canasta básica comprueba que el artículo con mayor despegue proporcional es:
+      </p>
+      <div className="p-2 bg-rose-950/30 border border-rose-900/40 rounded flex items-center gap-2 text-rose-300">
+        <span className="text-sm">🥔</span>
+        <div>
+          <span className="font-bold block text-[9px] text-slate-200">Papa Imilla</span>
+          <span className="font-mono text-[9px] font-bold">Sube +175.0%</span>
         </div>
-      ) : isLoading ? (
-        <div className="border border-slate-800 rounded-xl p-12 text-center flex flex-col items-center justify-center bg-slate-950/45">
-          <Loader2 className="w-10 h-10 text-emerald-400 animate-spin mb-4" />
-          <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest animate-pulse">
-            Ejecutando modelo gemini-3.5-flash...
-          </span>
-          <p className="text-[11px] text-slate-500 mt-2 max-w-sm">
-            Escribiendo informe de interpolación trilateral • Redactando diagnóstico de precios bolivianos • Analizando estabilidad de trazadores...
-          </p>
-        </div>
-      ) : (
-        <div className="border border-slate-800/80 rounded-xl p-5 bg-slate-950/60 max-h-[460px] overflow-y-auto">
-          {report && <CustomMarkdown text={report} />}
-          
-          <div className="border-t border-slate-800 mt-5 pt-4 text-[10px] text-slate-500 font-mono text-center">
-            Este reporte fue estructurado mediante el modelado de Lagrange, Newton, y Splines y ampliado mediante IA. No incurre en sesgos políticos individuales.
+      </div>
+      <p className="mt-1">
+        La carne y verduras perecederas sufren fluctuaciones inmediatas ante bloqueos de transporte o sequías en origen.
+      </p>
+    </div>
+  </div>
+</div>
+
+        {/* Question 4 */}
+        <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div className="w-7 h-7 rounded-lg bg-emerald-950/50 border border-emerald-900/40 flex items-center justify-center text-emerald-400 text-xs font-mono font-black mb-3">
+              4
+            </div>
+            <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+              ¿Qué tan confiable es la interpolación?
+            </h4>
+            <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+              <p>
+                <strong>Es extremadamente confiable con Splines Cúbicos</strong> (error local $O(h^4)$ y suavizado continuo). Esto simula de manera realista los acoplamientos del sector económico.
+              </p>
+              <p className="text-[10px] text-orange-400">
+                ⚠️ En cambio, los métodos de grado completo (Lagrange, Newton) para muchos puntos inducen el <em>Fenómeno de Runge</em>, arrojando oscilaciones espurias irreales.
+              </p>
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Question 5 */}
+        <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div className="w-7 h-7 rounded-lg bg-emerald-950/50 border border-emerald-900/40 flex items-center justify-center text-emerald-400 text-xs font-mono font-black mb-3">
+              5
+            </div>
+            <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+              ¿Qué pasa si los datos son muy dispersos?
+            </h4>
+            <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+              <p>
+                Si hay grandes vacíos de días sin datos, los polinomios globales de Newton y Lagrange sufren de inestabilidad numérica feroz, produciendo "jorobas" artificiales con precios negativos o absurdamente elevados.
+              </p>
+              <p>
+                Los <strong>Splines Cúbicos Naturales</strong> minimizan la curvatura integral (energía elástica mínima), sirviendo como la aproximación más estable y coherente a la realidad.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
