@@ -4,7 +4,7 @@
  */
 import { useState } from "react";
 import { Point, Product } from "./types";
-import { Sparkles, Brain, Scale, ShieldCheck, Database, FileSpreadsheet, Play, GitBranch, ArrowRight, BookOpen, Calculator, LineChart, Landmark, AlertTriangle, Users, Target } from "lucide-react";
+import { Sparkles,Layers, Brain, Scale, ShieldCheck, Database, FileSpreadsheet, Play, GitBranch, ArrowRight, BookOpen, Calculator, LineChart, Landmark, AlertTriangle, Users, Target } from "lucide-react";
 import FoodMarketSimulatorChart from "./components/FoodMarketSimulatorChart";
 import DataPointsTable from "./components/DataPointsTable";
 import PricePredictionCalculator from "./components/PricePredictionCalculator";
@@ -14,6 +14,8 @@ import GeminiReportSection from "./components/GeminiReportSection";
 import SurgeOverviewDashboard from "./components/SurgeOverviewDashboard";
 import AccumulatedCostIntegrationTab from "./components/AccumulatedCostIntegrationTab";
 
+import EscenarioA from "./components/EscenarioA";
+import EscenarioB from "./components/EscenarioB";
 import EscenarioE_RaicesTab from "./components/EscenarioE";
 import EscenarioF_SistemasTab from "./components/EscenarioF";
 import EscenarioG_EDOTab from "./components/EscenarioG";
@@ -87,7 +89,7 @@ export default function App() {
   const [activeIdx, setActiveIdx] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<number>(12.5); // Default is a day without points!
   // Modifica el tipo permitido en el useState para incluir las letras 'escenarioE', 'escenarioF' y 'escenarioG'
-const [activeTab, setActiveTab] = useState<"escenarioC" | "escenarioD" | "escenarioE" | "escenarioF" | "escenarioG">("escenarioC");
+const [activeTab, setActiveTab] = useState<"escenarioA" |"escenarioB" | "escenarioC" | "escenarioD" | "escenarioE" | "escenarioF" | "escenarioG">("escenarioA");
 
   // Active interpolation curves visibility toggles
   const [showLagrange, setShowLagrange] = useState<boolean>(true);
@@ -270,6 +272,30 @@ Puntos de Equilibrio Crítico (Raíces de Ecuaciones): Para encontrar los moment
         {/* Tab selection bar */}
         <div className="flex border-b border-slate-950 gap-2 overflow-x-auto pb-px">
           <button
+    onClick={() => setActiveTab("escenarioA")}
+    className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition select-none cursor-pointer whitespace-nowrap ${
+      activeTab === "escenarioA"
+        ? "border-emerald-500 text-emerald-400"
+        : "border-transparent text-slate-400 hover:text-slate-200"
+    }`}
+  >
+    <GitBranch className="w-4 h-4" />
+    <span>Escenario A</span>
+  </button>
+
+  {/* NUEVO: Botón Escenario B */}
+  <button
+    onClick={() => setActiveTab("escenarioB")}
+    className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition select-none cursor-pointer whitespace-nowrap ${
+      activeTab === "escenarioB"
+        ? "border-emerald-500 text-emerald-400"
+        : "border-transparent text-slate-400 hover:text-slate-200"
+    }`}
+  >
+    <Layers className="w-4 h-4" /> {/* Puedes usar cualquier ícono de lucide-react */}
+    <span>Escenario B</span>
+  </button>
+          <button
             onClick={() => setActiveTab("escenarioC")}
             className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition select-none cursor-pointer whitespace-nowrap ${
               activeTab === "escenarioC"
@@ -344,6 +370,12 @@ Puntos de Equilibrio Crítico (Raíces de Ecuaciones): Para encontrar los moment
         <div className="w-full">
           {(() => {
             switch (activeTab) {
+              case "escenarioA":
+        return <EscenarioA />;
+
+      // NUEVO: Retorno de Escenario B
+      case "escenarioB":
+        return <EscenarioB />;
               case "escenarioC":
                 return (
                   <>
