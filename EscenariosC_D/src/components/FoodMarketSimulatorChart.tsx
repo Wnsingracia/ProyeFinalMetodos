@@ -2,13 +2,16 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState, useRef, useEffect } from "react";
 import { Point, Product } from "../types";
 import { evaluateLagrange, evaluateNewton, evaluateCubicSpline } from "../mathUtils";
-import { Info, Lock, ArrowUpRight, HelpCircle, Eye, EyeOff } from "lucide-react";
+import { 
+  Info, Lock, ArrowUpRight, HelpCircle, Eye, EyeOff,
+  TrendingUp, Percent, CheckCircle, AlertTriangle, Calendar, Layers, ArrowRight
+} from "lucide-react";
 
-interface Props {
+// 1. Interfaces combinadas y corregidas
+interface ChartProps {
   product: Product;
   selectedDay: number;
   setSelectedDay: (day: number) => void;
@@ -19,6 +22,51 @@ interface Props {
   setClampOscillations: (clamp: boolean) => void;
 }
 
+interface ChallengeProps {
+  product: Product;
+  products: Product[];
+  selectedDay: number;
+}
+
+// 2. Componente Secundario (Exportado con nombre, NO default)
+// También le añadí un 'return' básico porque estaba incompleto en tu código original.
+export function ChallengeQuestionsScenarioC({ product, products, selectedDay }: ChallengeProps) {
+  const points = product.points;
+  const initialPrice = points[0]?.y || 1;
+  const finalPrice = points[points.length - 1]?.y || 1;
+  const percentageIncrease = ((finalPrice - initialPrice) / initialPrice) * 100;
+
+  const productIncreases = products.map((prod) => {
+    const pts = prod.points;
+    const p1 = pts[0]?.y || 1;
+    const pN = pts[pts.length - 1]?.y || 1;
+    const incr = ((pN - p1) / p1) * 100;
+    return { name: prod.name, emoji: prod.emoji, increase: incr };
+  });
+
+  const biggestPriceIncreaseProduct = [...productIncreases].sort((a, b) => b.increase - a.increase)[0];
+
+  const splineVal = evaluateCubicSpline(points, selectedDay);
+  const lagrangeVal = evaluateLagrange(points, selectedDay);
+  
+  let newtonVal = splineVal;
+  try {
+    newtonVal = evaluateNewton(points, selectedDay);
+  } catch (e) {
+    newtonVal = lagrangeVal;
+  }
+
+  // Se agregó el return que faltaba en tu código
+  return (
+    <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 text-slate-200">
+      <h3 className="font-bold flex items-center gap-2 mb-2"><TrendingUp className="w-4 h-4 text-emerald-400"/> Resumen del Desafío</h3>
+      <p className="text-sm text-slate-400 mb-1">Producto con mayor aumento: {biggestPriceIncreaseProduct.emoji} {biggestPriceIncreaseProduct.name} ({biggestPriceIncreaseProduct.increase.toFixed(2)}%)</p>
+      <p className="text-sm text-slate-400">Variación actual: {percentageIncrease.toFixed(2)}%</p>
+    </div>
+  );
+}
+
+// 3. Componente Principal (Exportado como DEFAULT)
 export default function FoodMarketSimulatorChart({
   product,
   selectedDay,
@@ -28,7 +76,7 @@ export default function FoodMarketSimulatorChart({
   showSpline,
   clampOscillations,
   setClampOscillations,
-}: Props) {
+}: ChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 600, height: 400 });
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; yLagrange: number; yNewton: number; ySpline: number; screenX: number; screenY: number } | null>(null);
@@ -52,10 +100,9 @@ export default function FoodMarketSimulatorChart({
   const yValues = points.map((p) => p.y);
 
   const xMin = 1;
-  const xMax = 30; // standard month 30 days
+  const xMax = 30; 
   const maxInputY = Math.max(...yValues, 5);
 
-  // Compute values for sampling to check if values oscillate wildy
   const step = 0.2;
   const samples: { x: number; lagrange: number; newton: number; spline: number }[] = [];
   
@@ -68,12 +115,10 @@ export default function FoodMarketSimulatorChart({
     });
   }
 
-  // Find max Y for drawing
   let activeYMin = 0;
   let activeYMax = maxInputY * 1.25;
 
   if (!clampOscillations) {
-    // If we want to see Runge's extreme oscillations, look at real values
     let extremeMax = activeYMax;
     samples.forEach((s) => {
       if (showLagrange && s.lagrange > extremeMax && s.lagrange < 500) extremeMax = s.lagrange;
@@ -82,7 +127,6 @@ export default function FoodMarketSimulatorChart({
     });
     activeYMax = extremeMax;
 
-    // Check under-shoot oscillations
     let extremeMin = 0;
     samples.forEach((s) => {
       if (showLagrange && s.lagrange < extremeMin) extremeMin = s.lagrange;
@@ -91,16 +135,14 @@ export default function FoodMarketSimulatorChart({
     activeYMin = Math.max(-50, extremeMin);
   }
 
-  // Margins for SVG Plotting
   const margin = { top: 30, right: 30, bottom: 50, left: 55 };
   const plotW = dimensions.width - margin.left - margin.right;
   const plotH = dimensions.height - margin.top - margin.bottom;
 
-  // Coordinate Conversion Helpers
   const toScreenX = (x: number) => margin.left + plotW * ((x - xMin) / (xMax - xMin || 1));
   const toScreenY = (y: number) => {
     const relativePos = (y - activeYMin) / (activeYMax - activeYMin || 1);
-    return margin.top + plotH * (1 - relativePos); // Invert Y axis
+    return margin.top + plotH * (1 - relativePos);
   };
 
   const fromScreenX = (screenX: number) => {
@@ -108,14 +150,12 @@ export default function FoodMarketSimulatorChart({
     return xMin + xFraction * (xMax - xMin);
   };
 
-  // Generate continuous SVG paths
   const getPathData = (pointsData: { x: number; y: number }[]) => {
     if (pointsData.length === 0) return "";
     return pointsData
       .map((p, idx) => {
         const sx = toScreenX(p.x);
         const sy = toScreenY(p.y);
-        // Clamp SVG coords to avoid blowing up the renderer
         const safeX = isNaN(sx) ? 0 : Math.max(-1000, Math.min(3000, sx));
         const safeY = isNaN(sy) ? 0 : Math.max(-1000, Math.min(3000, sy));
         return `${idx === 0 ? "M" : "L"} ${safeX} ${safeY}`;
@@ -127,7 +167,6 @@ export default function FoodMarketSimulatorChart({
   const newtonPathData = getPathData(samples.map((s) => ({ x: s.x, y: s.newton })));
   const splinePathData = getPathData(samples.map((s) => ({ x: s.x, y: s.spline })));
 
-  // Mouse interactivity on chart
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
     if (!containerRef.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -161,12 +200,16 @@ export default function FoodMarketSimulatorChart({
     }
   };
 
-  // Grid tick numbers
   const xTicks = [1, 5, 10, 15, 20, 25, 30];
   const yTicksCount = 6;
   const yTicks = Array.from({ length: yTicksCount }, (_, i) => {
     return Number((activeYMin + ((activeYMax - activeYMin) / (yTicksCount - 1)) * i).toFixed(1));
   });
+
+  // Nota: El return de este componente (el renderizado del SVG) no estaba en el código que me pasaste,
+  // asegúrate de que el JSX de tu gráfico siga aquí abajo.
+ 
+
 
   return (
     <div className="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-5 shadow-2xl relative">
@@ -473,7 +516,24 @@ export default function FoodMarketSimulatorChart({
           </div>
         )}
       </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+      
+      {/* Visual Header */}
+      <div className="border-b border-slate-800 pb-4">
+        <span className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-950/40 border border-emerald-900/60 px-2.5 py-1 rounded-full">
+          Cuestionario de Evaluación • Escenario C
+        </span>
+        <h3 className="text-base font-bold text-slate-100 mt-2.5">
+          Preguntas de Análisis que Responde la Simulación Científica
+        </h3>
+        <p className="text-xs text-slate-400 mt-1">
+          La combinación de simulación y cálculo numérico nos permite descifrar las dinámicas socioeconómicas del desabastecimiento con rigor matemático determinista.
+        </p>
+      </div>
 
+      
+
+    </div>
       {/* Dynamic Lagrange Oscillation HUD explanation */}
       {!clampOscillations && (showLagrange || showNewton) && samples.some(s => s.lagrange < -5 || s.lagrange > maxInputY * 2.5) && (
         <div className="mt-3 bg-amber-950/30 border border-amber-900/50 p-2.5 rounded-xl flex items-center gap-2.5 text-xs text-amber-300">
@@ -482,7 +542,10 @@ export default function FoodMarketSimulatorChart({
             <strong>Efecto Runge Visible:</strong> La curva de Lagrange/Newton oscila violentamente hacia valores extremos e irreales porque intentamos forzar un polinomio de alto grado sobre puntos dispersos. Activa el <strong>Filtro de estabilidad</strong> arriba para hacer zoom sobre los datos reales.
           </p>
         </div>
+        
       )}
     </div>
+    
   );
+  
 }
