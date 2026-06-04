@@ -2,7 +2,6 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useState } from "react";
 import { Point, Product } from "./types";
 import { Sparkles, Brain, Scale, ShieldCheck, Database, FileSpreadsheet, Play, GitBranch, ArrowRight, BookOpen, Calculator, LineChart, Landmark, AlertTriangle, Users, Target } from "lucide-react";
@@ -136,39 +135,115 @@ const [activeTab, setActiveTab] = useState<"escenarioC" | "escenarioD" | "escena
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-900 border-t-4 border-emerald-500">
       
       {/* Upper Navigation & Academic Header */}
+      
       <header className="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 sm:px-8 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="bg-emerald-500 fill-slate-950 text-slate-950 p-2.5 rounded-xl border border-emerald-400">
-            <Brain className="w-6 h-6 text-slate-950" />
-          </div>
+          
           <div>
             <span className="text-[10px] font-mono tracking-widest text-emerald-400 font-black uppercase flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               SISTEMA DE ANALÍTICA NUMÉRICA
             </span>
             <h1 className="text-xl font-black font-sans text-slate-100 tracking-tight mt-0.5 uppercase">
-              Escenarios C y D: Desafío Final de Métodos Numéricos
+              Simulación numérica de abastecimiento, precios y conflicto social en contexto de crisis
             </h1>
           </div>
         </div>
 
-        {/* Informative Academic Badges */}
-        <div className="flex flex-wrap gap-2 text-xs font-mono">
-          <span className="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
-            C: Lagrange, Newton y Splines
-          </span>
-          <span className="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-1.5">
-            <Calculator className="w-3.5 h-3.5 text-pink-400" />
-            D: Trapecio, Simpson 1/3 y 3/8
-          </span>
-          <span className="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-1.5">
-            <Database className="w-3.5 h-3.5 text-cyan-400" />
-            Canasta Básica Boliviana
-          </span>
-        </div>
+        
       </header>
+    <section className="px-4 sm:px-8 py-12 flex justify-center border-b border-slate-900">
+  {/* Columna Izquierda: Título y Descripción */}
+  <div className="flex-1 flex flex-col gap-5">
+    
+    {/* Contenedor de Título e Ícono */}
+    <div className="flex items-start gap-4">
+      <div className="bg-emerald-500 fill-slate-950 text-slate-950 p-2.5 rounded-xl border border-emerald-400 shrink-0 mt-1">
+        <Brain className="w-6 h-6 text-slate-950" />
+      </div>
+      <div>
+        <span className="text-[10px] font-mono tracking-widest text-emerald-400 font-black uppercase flex items-center gap-1.5 mb-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          SISTEMA DE ANALÍTICA NUMÉRICA
+        </span>
+        <h1 className="text-xl md:text-2xl font-black font-sans text-slate-100 tracking-tight uppercase leading-tight">
+          Simulación numérica de abastecimiento, precios y conflicto social en contexto de crisis
+        </h1>
+      </div>
+    </div>
 
+    {/* Descripción del Proyecto */}
+    <div className="flex flex-col gap-3 text-xs md:text-sm text-slate-400 leading-relaxed text-justify pr-0 lg:pr-8">
+      <p>
+        Contexto Macro-Socioeconómico
+El país atraviesa una coyuntura crítica caracterizada por una disrupción sistémica de la cadena de suministros. Este escenario se manifiesta en el desabastecimiento crónico de carburantes y alimentos esenciales, el estrangulamiento de las vías de transporte mediante bloqueos y un clima de especulación impulsado por rumores de escasez. En conjunto, estos factores generan una inflación agresiva que erosiona aceleradamente el poder adquisitivo de los hogares, configurando un panorama de alta volatilidad y conflicto social.
+      </p>
+      <p>
+       El Motor Computacional frente a la Crisis
+Ante la complejidad de este fenómeno, el presente desafío propone trascender el análisis empírico y utilizar los Métodos Numéricos como un instrumento analítico de precisión. El objetivo es construir un Sistema de Analítica Numérica en un entorno web interactivo, capaz de procesar, simular y visualizar la crisis mediante modelos matemáticos puros, desprovistos de sesgos o posicionamientos políticos.
+      </p>
+      <p>
+       Para desmenuzar esta realidad, el sistema articula los siguientes motores matemáticos:
+    </p>
+    <p>
+Modelado de Volatilidad y Especulación (Interpolación): Ante la falta de datos diarios o cortes de información por bloqueos, la Interpolación de Lagrange, Newton y los Splines Cúbicos permiten proyectar tendencias de precios y reconstruir el comportamiento de los mercados de manera continua, mitigando las oscilaciones irreales.
+</p>
+    <p>
+Cuantificación del Impacto Económico (Integración Numérica): La pérdida del poder adquisitivo familiar no es un evento estático, sino un drenaje financiero acumulativo. Mediante los métodos de Simpson (1/3 y 3/8) y el Trapecio, el sistema mide el área bajo la curva del sobrecosto inflacionario, revelando el daño económico real a lo largo del mes.
+</p>
+    <p>
+Optimización de Redes de Suministro (Sistemas Lineales): Las cadenas de distribución colapsadas y la redistribución de recursos limitados se modelan como matrices complejas. Utilizando Factorización LU, Jacobi, Gauss-Seidel y Gradiente Conjugado, es posible analizar cuellos de botella y perturbaciones en la matriz de transporte.
+</p>
+    <p>
+Dinámica del Conflicto y Reservas (Ecuaciones Diferenciales Ordinarias): El pánico financiero, la propagación de rumores y la velocidad a la que se vacían los inventarios de combustible son sistemas dinámicos. El uso de RK4, Heun y Euler permite predecir cómo evolucionan estas tasas de cambio en el tiempo antes de alcanzar un punto de quiebre social.
+</p>
+    <p>
+Puntos de Equilibrio Crítico (Raíces de Ecuaciones): Para encontrar los momentos exactos en los que la oferta iguala a la demanda (o cuándo el presupuesto familiar llega a cero), los algoritmos de Bisección, Newton-Raphson y la Secante calculan las intersecciones críticas del modelo.
+      </p>
+    </div>
+  </div>
+
+  {/* Columna Derecha: Métodos Utilizados */}
+  <div className="w-full lg:w-[420px] shrink-0 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+    <h3 className="text-[11px] font-mono tracking-widest text-slate-300 font-black uppercase mb-3 flex items-center gap-2">
+      <Calculator className="w-4 h-4 text-emerald-400" />
+      Motores Matemáticos Implementados
+    </h3>
+    
+    <div className="flex flex-wrap gap-2 text-[11px] font-mono">
+      {/* Sistemas y Ecuaciones */}
+      <span className="bg-slate-900 border border-slate-700 px-2 py-1 rounded-md text-slate-300">Jacobi</span>
+      <span className="bg-slate-900 border border-slate-700 px-2 py-1 rounded-md text-slate-300">Gauss-Seidel</span>
+      <span className="bg-slate-900 border border-slate-700 px-2 py-1 rounded-md text-slate-300">SOR</span>
+      <span className="bg-slate-900 border border-slate-700 px-2 py-1 rounded-md text-slate-300">LU</span>
+      <span className="bg-slate-900 border border-slate-700 px-2 py-1 rounded-md text-slate-300">Gradiente Conjugado</span>
+      <span className="bg-slate-900 border border-slate-700 px-2 py-1 rounded-md text-slate-300">Sistemas Lineales</span>
+      
+      {/* EDOs */}
+      <span className="bg-slate-800 border border-emerald-900/50 px-2 py-1 rounded-md text-emerald-300">Euler</span>
+      <span className="bg-slate-800 border border-emerald-900/50 px-2 py-1 rounded-md text-emerald-300">Heun</span>
+      <span className="bg-slate-800 border border-emerald-900/50 px-2 py-1 rounded-md text-emerald-300">RK4</span>
+      
+      {/* Interpolación */}
+      <span className="bg-slate-800 border border-cyan-900/50 px-2 py-1 rounded-md text-cyan-300">Lagrange</span>
+      <span className="bg-slate-800 border border-cyan-900/50 px-2 py-1 rounded-md text-cyan-300">Newton (Interp.)</span>
+      <span className="bg-slate-800 border border-cyan-900/50 px-2 py-1 rounded-md text-cyan-300">Splines Cúbicos</span>
+      
+      {/* Raíces */}
+      <span className="bg-slate-800 border border-pink-900/50 px-2 py-1 rounded-md text-pink-300">Bisección</span>
+      <span className="bg-slate-800 border border-pink-900/50 px-2 py-1 rounded-md text-pink-300">Newton-Raphson</span>
+      <span className="bg-slate-800 border border-pink-900/50 px-2 py-1 rounded-md text-pink-300">Secante</span>
+      
+      {/* Análisis y Salida */}
+      <span className="bg-slate-900 border border-amber-900/50 px-2 py-1 rounded-md text-amber-300">Número de Condición</span>
+      <span className="bg-slate-900 border border-amber-900/50 px-2 py-1 rounded-md text-amber-300">Perturbación</span>
+      <span className="bg-slate-900 border border-amber-900/50 px-2 py-1 rounded-md text-amber-300 flex items-center gap-1">
+        <Database className="w-3 h-3" /> Gráfica de Resultados
+      </span>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1jH7row-gbRWPBopBoI1rWm3bkBL6c3OmCA&s" alt="Diagrama de Métodos" className="w-full rounded-md border border-slate-700 mt-2" />
+    </div>
+  </div>
+</section>
       {/* Main Container Layout */}
       <main className="flex-grow p-4 sm:p-8 flex flex-col gap-6 max-w-7xl w-full mx-auto">
         
@@ -383,38 +458,149 @@ const [activeTab, setActiveTab] = useState<"escenarioC" | "escenarioD" | "escena
                     </section>
 
                     {/* Let user edit data points in real-time and see immediate impact on integration */}
-                    <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-6">
-                      <DataPointsTable
-                        product={activeProduct}
-                        onPointsChange={handlePointsChange}
-                        onReset={handleResetProduct}
-                      />
-                      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-                        <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-                          📖 Guía y Teoría Económica del Escenario D
-                        </h3>
-                        <p className="text-xs text-slate-400 leading-relaxed text-justify">
-                          El desabastecimiento de alimentos no solo eleva los precios momentáneamente, sino que drena los ahorros familiares de forma continua. La integral definida $$\int_{1}^{30} P(x) \, dx$$ mide precisamente ese efecto acumulativo a lo largo de un ciclo mensual de 29 días de adquisición diaria activa.
-                        </p>
-                        <div className="p-3 bg-slate-950 rounded-xl space-y-2.5 text-xs font-mono">
-                          <span className="font-bold text-emerald-400 block uppercase tracking-wide">💡 Análisis del Impacto Adquisitivo:</span>
-                          <ul className="space-y-2 text-[11px] text-slate-300">
-                            <li className="flex gap-1.5 items-start">
-                              <span className="text-emerald-500 font-bold">1.</span>
-                              <span><strong>Gasto Real:</strong> Refleja el monto acumulado del consumo dinámico. En el mundo real, los trapecios o curvas parabólicas describen mejor esta transición continua.</span>
-                            </li>
-                            <li className="flex gap-1.5 items-start">
-                              <span className="text-emerald-500 font-bold">2.</span>
-                              <span><strong>Escenario Teórico:</strong> Representa un hipotético mercado con precios estables fijos en el Día 1.</span>
-                            </li>
-                            <li className="flex gap-1.5 items-start">
-                              <span className="text-emerald-500 font-bold">3.</span>
-                              <span><strong>Pérdida de Poder Adquisitivo:</strong> Es la brecha monetaria obligada que drena el presupuesto de subsistencia de las familias bolivianas.</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </section>
+                    <section className="mt-6">
+  {/* Main questions grid (Reemplazó a la tabla anterior y la guía teórica) */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+
+    {/* Question 1 */}
+<div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+  <div>
+    <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+      1
+    </div>
+    <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+      ¿Cuánto gastó una familia durante el mes?
+    </h4>
+    <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+      <p>
+        Calculando la integral de la curva continua de precios multiplicada por la cantidad adquirida:
+      </p>
+      <div className="p-2 bg-slate-900/60 border border-slate-800/40 rounded font-mono text-[9px] text-slate-300">
+        <div className="flex justify-between text-slate-200">
+          <span>En Papa Imilla:</span>
+          <span className="text-pink-400 font-bold">461.12 Bs</span>
+        </div>
+        <div className="flex justify-between text-slate-400 mt-1">
+          <span>Canasta Completa:</span>
+          <span className="font-bold">2059.78 Bs</span>
+        </div>
+      </div>
+      <p>
+        Esto cuantifica el desembolso real bajo condiciones de desabastecimiento dinámico.
+      </p>
+    </div>
+  </div>
+</div>
+
+    {/* Question 2 */}
+<div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+  <div>
+    <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+      2
+    </div>
+    <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+      ¿Cuánto hubiera gastado si los precios no subían?
+    </h4>
+    <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+      <p>
+        Sin distorsión inflacionaria, el gasto se rige por una tasa constante igual al precio del Día 1.
+      </p>
+      <div className="p-2 bg-slate-900/60 border border-slate-800/40 rounded font-mono text-[9px] text-slate-300">
+        <div className="flex justify-between text-slate-200">
+          <span>En Papa Imilla:</span>
+          <span className="text-slate-400 font-bold">232.00 Bs</span>
+        </div>
+        <div className="flex justify-between text-slate-400 mt-1">
+          <span>Canasta Completa:</span>
+          <span className="font-bold">1218.00 Bs</span>
+        </div>
+      </div>
+      <p>
+        Este representa el "Estado Base" o de equilibrio que un mercado estable habría asegurado al consumidor.
+      </p>
+    </div>
+  </div>
+</div>
+
+    {/* Question 3 */}
+<div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+  <div>
+    <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+      3
+    </div>
+    <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+      ¿Cuál fue la pérdida del poder adquisitivo?
+    </h4>
+    <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+      <p>
+        Representa el sobrecosto neto que debieron absorber los hogares vulnerables debido a la inflación:
+      </p>
+      <div className="p-2 bg-rose-950/20 border border-rose-900/30 rounded font-mono text-[9px] text-rose-300">
+        <div className="flex justify-between">
+          <span>Pérdida en Papa Imilla:</span>
+          <span className="font-bold">+229.12 Bs</span>
+        </div>
+        <div className="flex justify-between text-slate-300 mt-1">
+          <span>Pérdida de Canasta:</span>
+          <span className="font-black text-rose-400">+841.78 Bs</span>
+        </div>
+      </div>
+      <p>
+        La brecha obligó a los hogares a sacrificar otros consumos esenciales para cubrir alimentos básicos.
+      </p>
+    </div>
+  </div>
+</div>
+
+    {/* Question 4 */}
+    <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+      <div>
+        <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+          4
+        </div>
+        <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+          ¿Qué método de integración fue más preciso?
+        </h4>
+        <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+          <p>
+            <strong>Simpson 1/3 y Simpson 3/8 Compuestos</strong> son los métodos más precisos y estables (error local $O(h^4)$ o mejor).
+          </p>
+          <p>
+            El método del Trapecio compuesto asume empalmes lineales rectos entre muestras sucesivas, generando un error de aproximación mayor ($O(h^2)$) que tiende a inflar el costo final cuando hay curvas de alta concavidad o convexidad dadas por los Splines.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Question 5 */}
+<div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between hover:border-slate-700 transition">
+  <div>
+    <div className="w-7 h-7 rounded-lg bg-pink-950/50 border border-pink-900/40 flex items-center justify-center text-pink-400 text-xs font-mono font-black mb-3">
+      5
+    </div>
+    <h4 className="text-xs font-bold text-slate-200 mb-2 min-h-[36px]">
+      ¿Qué producto afectó más al gasto mensual?
+    </h4>
+    <div className="text-[11px] text-slate-400 leading-relaxed text-justify space-y-2">
+      <p>
+        El impacto económico real se determina por el sobrecosto absoluto integrado:
+      </p>
+      <div className="p-2 bg-rose-950/30 border border-rose-900/40 rounded flex items-center gap-2 text-rose-300">
+        <span className="text-sm">🛢️</span>
+        <div>
+          <span className="font-bold block text-[9px] text-slate-200">Aceite Vegetal</span>
+          <span className="font-mono text-[9px]">Pérdida: +280.21 Bs</span>
+        </div>
+      </div>
+      <p className="mt-1">
+        Aquel artículo con precio inicial elevado y mayor pendiente alcista castiga de manera implacable el presupuesto básico del mes.
+      </p>
+    </div>
+  </div>
+</div>
+
+  </div>
+</section>
                   </>
                 );
 
